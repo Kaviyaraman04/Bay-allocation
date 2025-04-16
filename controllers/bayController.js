@@ -21,21 +21,31 @@ exports.getAllBays = async (req, res) => {
   }
 };
 
-// Read One
 exports.getBayById = async (req, res) => {
-  try {
-    const bay = await Bay.findById(req.params.id);
-    if (!bay) return res.status(404).json({ message: 'Bay not found' });
-    res.status(200).json(bay);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// Update
+    const { bayid } = req.query;  // Get ID from query parameter
+    if (!bayid) return res.status(400).json({ message: 'ID is required to fetch the bay.' });
+  
+    try {
+      const bay = await Bay.findById(bayid); // Use query parameter ID
+      if (!bay) return res.status(404).json({ message: 'Bay not found' });
+      res.status(200).json(bay);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
+// Update (Pass ID and Data in the Request Body)
 exports.updateBay = async (req, res) => {
+  const { _id, bay_name, bay_description, no_of_manpower, is_active } = req.body;
+
+  if (!_id) return res.status(400).json({ message: 'ID is required to update the bay.' });
+
   try {
-    const bay = await Bay.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const bay = await Bay.findByIdAndUpdate(
+      _id, 
+      { bay_name, bay_description, no_of_manpower, is_active },
+      { new: true }
+    );
     if (!bay) return res.status(404).json({ message: 'Bay not found' });
     res.status(200).json(bay);
   } catch (error) {
@@ -43,10 +53,13 @@ exports.updateBay = async (req, res) => {
   }
 };
 
-// Delete
+// Delete (Use Query Parameter)
 exports.deleteBay = async (req, res) => {
+  const { bayid } = req.query;  // Get ID from query parameter
+  if (!bayid) return res.status(400).json({ message: 'ID is required to delete the bay.' });
+
   try {
-    const bay = await Bay.findByIdAndDelete(req.params.id);
+    const bay = await Bay.findByIdAndDelete(bayid); // Use query parameter ID
     if (!bay) return res.status(404).json({ message: 'Bay not found' });
     res.status(200).json({ message: 'Bay deleted successfully' });
   } catch (error) {
