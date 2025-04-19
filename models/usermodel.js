@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
   city: String,
   address: String,
   pincode: String,
-  password: String
+  password: String,
+  status: { type: Number, default: 1 }
 });
 
 module.exports = mongoose.model('UserDetail', userSchema);

@@ -4,6 +4,9 @@ const connectDB = require('./config/db');
 const bayRoutes = require('./routes/bayRoutes');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes');
+const adminRouter = require('./routes/adminRoutes');
+
+
 
 dotenv.config();
 
@@ -12,7 +15,9 @@ connectDB();
 
 app.use(bodyParser.json());
 
-app.use('/dev', bayRoutes,userRoutes);
+app.use('/dev', bayRoutes,userRoutes,adminRouter);
+// app.use('/admin', adminRouter);
+
 // app.use('/user', userRoutes);
 
 const PORT = process.env.PORT || 5000;

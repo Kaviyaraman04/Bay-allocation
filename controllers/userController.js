@@ -70,11 +70,19 @@ exports.deleteUser = async (req, res) => {
 // Login (HIDE password in response)
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ message: 'Email and password required.' });
+
+  // All 3 fields required
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required.' });
+  }
 
   try {
-    const user = await User.findOne({ email, password }).select('-password');
-    if (!user) return res.status(401).json({ message: 'Invalid email or password' });
+    // Find user with matching email, password, and status = 1 (active)
+    const user = await User.findOne({ email, password, status: 1 }).select('-password');
+
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email, password, or inactive user.' });
+    }
 
     res.status(200).json({ message: 'User successfully logged in', user });
   } catch (error) {
