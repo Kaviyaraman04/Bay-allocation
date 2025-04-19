@@ -16,3 +16,14 @@ exports.adminLogin = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.createAdmin = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const admin = new Admin({ email, password });
+      await admin.save();
+      res.status(201).json({ message: 'Admin created', admin });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+  
